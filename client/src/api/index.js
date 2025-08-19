@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API = axios.create({ baseURL:   baseURL:
+const API = axios.create({ baseURL:
     "https://image-generation-0g9d.onrender.com/api/" ||
     "http://localhost:8080/api/", });
 
