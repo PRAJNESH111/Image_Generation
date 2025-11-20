@@ -55,3 +55,6 @@ backend/.env.production
 # System Files
 .DS_Store
 Thumbs.db
+client/build/
+server/node_modules/
+client/node_modules/
