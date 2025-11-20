@@ -52,61 +52,91 @@ Replace the TODO sections with your repo-specific details (scripts, model names,
 
 ## Quick start
 
-1. Clone the repo:
+1. **Clone the repository:**
+   ```bash
    git clone https://github.com/PRAJNESH111/Image_Generation.git
-2. Create a virtual environment and install dependencies:
-   python -m venv .venv
-   source .venv/bin/activate  # Windows: .venv\Scripts\activate
-   pip install -r requirements.txt
-3. Add credentials or model weights as described in [Configuration](#configuration).
-4. Run a quick generation:
-   python scripts/generate.py --prompt "A photorealistic astronaut riding a horse" --output outputs/
+   cd Image_Generation
+   ```
 
-Note: If the repository does not contain `requirements.txt` or `scripts/generate.py`, adapt the commands to your project layout or add those files.
+2. **Setup the Server:**
+   ```bash
+   cd server
+   npm install
+   # Create .env file with GOOGLE_API_KEY
+   npm start
+   ```
+
+3. **Setup the Client:**
+   ```bash
+   cd ../client
+   npm install
+   # Create .env file from .env.example
+   # Set REACT_APP_API_URL to your backend URL
+   npm start
+   ```
+
+4. **Access the application:**
+   - Open your browser to `http://localhost:3000`
+   - Enter a prompt and generate AI images!
 
 ---
 
 ## Installation
 
 Prerequisites:
-- Python 3.8+ (recommended)
-- pip
-- Optional: CUDA-enabled GPU + matching CUDA/cuDNN for PyTorch/TensorFlow
+- Node.js 16+ and npm
+- MongoDB database (or use MongoDB Atlas)
+- Google Generative AI API key
 
 Install:
-1. Clone:
+1. **Clone the repository:**
+   ```bash
    git clone https://github.com/PRAJNESH111/Image_Generation.git
    cd Image_Generation
-2. Setup venv:
-   python -m venv .venv
-   source .venv/bin/activate
-3. Install dependencies:
-   pip install -r requirements.txt
+   ```
 
-If you use Conda:
-   conda create -n img-gen python=3.9
-   conda activate img-gen
-   pip install -r requirements.txt
+2. **Install Server Dependencies:**
+   ```bash
+   cd server
+   npm install
+   ```
 
-If no requirements file exists yet, create one with the packages your code uses (e.g., torch, torchvision, transformers, diffusers, pillow, streamlit).
+3. **Install Client Dependencies:**
+   ```bash
+   cd ../client
+   npm install
+   ```
+
+4. **Configure Environment Variables:**
+   - Copy `client/.env.example` to `client/.env`
+   - Set `REACT_APP_API_URL` to your backend URL
+   - Create `server/.env` with your `GOOGLE_API_KEY`
 
 ---
 
 ## Configuration
 
-- .env or config.yaml
-  - MODEL_NAME: name or path of the model checkpoint to use
-  - HF_TOKEN (optional): Hugging Face API token for downloading models
-  - CUDA: whether to use GPU
+### Client Configuration
 
-Example .env (create at project root):
+Create a `.env` file in the `client/` directory (copy from `client/.env.example`):
+
 ```
-MODEL_NAME=runwayml/stable-diffusion-v1-5
-HF_TOKEN=hf_XXXXXXXXXXXXXXXXXXXXXXXX
-DEVICE=cuda
+REACT_APP_API_URL=https://your-backend-url.com/api/
 ```
 
-Adjust config file names and keys to match the repository code.
+- `REACT_APP_API_URL`: URL of your backend API
+  - For production: Set to your deployed backend URL (e.g., `https://image-generation-0g9d.onrender.com/api/`)
+  - For development: Defaults to `http://localhost:8080/api/` if not set
+
+### Server Configuration
+
+Create a `.env` file in the `server/` directory:
+
+```
+GOOGLE_API_KEY=your_google_api_key_here
+```
+
+- `GOOGLE_API_KEY`: Your Google Generative AI API key for image generation
 
 ---
 
