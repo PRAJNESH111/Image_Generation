@@ -33,17 +33,24 @@ app.get("/", async (req, res) => {
   });
 });
 
-//function to connect to mongodb
+const PORT = process.env.PORT || 8080;
+
 const connectDB = () => {
+  const mongoUrl = process.env.MONGODB_URL;
+
+  if (!mongoUrl) {
+    console.error("❌ MONGODB_URL is not configured in the environment.");
+    process.exit(1);
+  }
+
   mongoose.set("strictQuery", true);
   mongoose
-    .connect(
-      "mongodb+srv://Prajnesh:Prajnesh%402001@cluster0.m6m0gnn.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-    )
-    .then(() => console.log("MongoDB Connected"))
+    .connect(mongoUrl)
+    .then(() => console.log("✅ MongoDB Connected"))
     .catch((err) => {
       console.error("Failed to connect to DB");
       console.error(err);
+      process.exit(1);
     });
 };
 
@@ -51,8 +58,8 @@ const connectDB = () => {
 const startServer = async () => {
   try {
     connectDB();
-    const server = app.listen(8080, () =>
-      console.log("Server started on port 8080")
+    const server = app.listen(PORT, () =>
+      console.log(`Server started on port ${PORT}`)
     );
     server.setTimeout(600000); // Set timeout to 10 minutes (600000 ms)
   } catch (error) {
