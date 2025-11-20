@@ -56,20 +56,10 @@ export const generateImage = async (req, res) => {
     const response = await axios.post(
   `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0:generateImage?key=${process.env.GOOGLE_API_KEY}`,
   {
-    contents: [
-      {
-        parts: [
-          {
-            text: prompt
-          }
-        ]
-      }
-    ],
-    generationConfig: {
-      responseModalities: ["TEXT", "IMAGE"]
-    }
+    prompt: { text: prompt }
   }
-    );
+);
+
 
     // Find the image part in the response
     const imagePart = response.data?.candidates?.[0]?.content?.parts?.find(
