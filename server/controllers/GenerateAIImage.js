@@ -45,58 +45,29 @@ export const generateImage = async (req, res) => {
   try {
     const { prompt } = req.body;
 
-    console.log("API KEY:", process.env.GOOGLE_API_KEY); // Debug log for the new API key
-
-    // Check if the API key is available
-    if (!process.env.GOOGLE_API_KEY) {
-      console.error("❌ GOOGLE_API_KEY is not set in environment variables.");
-      return res.status(500).json({ error: "Google API key not configured." });
+    if (!prompt) {
+      return res.status(400).json({ error: "Prompt is required" });
     }
 
     const response = await axios.post(
-  `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0:generateImage?key=${process.env.GOOGLE_API_KEY}`,
-  {
-    prompt: { text: prompt }
-  }
-);
-
-
-    // Find the image part in the response
-    const imagePart = response.data?.candidates?.[0]?.content?.parts?.find(
-      (part) => part.inlineData?.mimeType?.startsWith("image/")
+      `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0:generateImage?key=${process.env.GOOGLE_API_KEY}`,
+      {
+        prompt: { text: prompt }
+      }
     );
 
-    if (imagePart && imagePart.inlineData?.data) {
-      const base64Image = imagePart.inlineData.data;
-      const mimeType = imagePart.inlineData.mimeType;
-      // Send the base64 data as a data URL
-      res.status(200).json({ photo: `data:${mimeType};base64,${base64Image}` });
-    } else {
-      // Handle cases where no image part is found or data is missing
-      console.error(
-        "❌ Error generating image: No image data found in response."
-      );
-      res.status(500).json({
-        error:
-          "Error generating image: No image data received or unexpected response format.",
-      });
-    }
+    const base64Image = response.data.images[0].data;
+
+    res.status(200).json({
+      photo: `data:image/png;base64,${base64Image}`,
+    });
+
   } catch (err) {
-    console.error("❌ Error generating image:", err.message);
-    // Provide more specific error details if available from the API response
-    if (err.response?.data) {
-      console.error("API Error details:", err.response.data);
-      res.status(err.response.status || 500).json({
-        error:
-          err.response.data.error ||
-          err.response.data.message ||
-          "Image generation failed.",
-        details: err.response.data,
-      });
-    } else {
-      res
-        .status(500)
-        .json({ error: "Image generation failed.", details: err.message });
-    }
+    console.error("❌ Backend error:", err.response?.data || err.message);
+
+    res.status(err.response?.status || 500).json({
+      error: "Image generation failed.",
+      details: err.response?.data || err.message,
+    });
   }
 };
